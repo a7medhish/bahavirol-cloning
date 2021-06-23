@@ -1,3 +1,4 @@
+
 import cv2
 import glob
 import random
@@ -17,8 +18,10 @@ measurements = []
 
 
 
-with open(  '../data/driving_log.csv') as csvfile :
+with open(  './data/driving_log.csv') as csvfile :
      reader = csv.reader(csvfile)
+     next(reader) #skips the first line
+
      for line in reader:
           lines.append(line)
 
@@ -27,9 +30,10 @@ with open(  '../data/driving_log.csv') as csvfile :
 for line in lines:
      source_path = line[0]
      filename = source_path.split('/')[-1]
-     current_path =  '../data/IMG/' + filename
+     current_path =  './data/IMG/' + filename
      image = cv2.imread(current_path)
      images.append(image)
+
      measurements.append(float(line[3]))
 
 x_train = np.array(images)
@@ -52,6 +56,8 @@ model.add(Dense(10))
 model.add(Dense(1))
 
 model.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0001))
-model.fit_generator(x_train, y_train,validation_split = 0.2 , shuffle = True,nb_epoch = 6)
+model.fit_generator(x_train, y_train,validation_steps = 0.2 , shuffle = True,nb_epoch = 6)
 
-model.save('model101.h5')
+#model.fit_generator(x_train, y_train, epochs=6, shuffle=True)
+#, validation_steps=0.2
+model.save('model102.h5')
